@@ -9,6 +9,7 @@ import "./puzzle.css";
 import {
   Change,
   ClientMessage,
+  PuzzleEntry,
   PuzzleEvent,
   ServerMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
@@ -17,6 +18,8 @@ import { Scores } from "@/app/(cord)/puzzle/Scores";
 // declare const PARTYKIT_HOST: string;
 
 const PARTYKIT_HOST = "127.0.0.1:1999";
+
+type PuzzleDivElement = { puzzleEntry: PuzzleEntry } & HTMLDivElement;
 
 export function Puzzle({
   id,
@@ -27,7 +30,7 @@ export function Puzzle({
   givens: string[];
   player: string;
 }) {
-  const puzzleRef = useRef(null);
+  const puzzleRef = useRef<PuzzleDivElement>(null);
   const alternatesSet = useMemo(() => {
     return new Set<string>();
   }, []);
@@ -80,11 +83,13 @@ export function Puzzle({
   // into the actual html after loading the script, we need to do a few things
   // once the dom is set up.  This block of code does those necessary things.
   useEffect(() => {
+    if (!puzzleRef.current) {
+      return;
+    }
     const observer = new MutationObserver(() => {
       if (!puzzleRef.current) {
         return;
       }
-      console.log(puzzleRef.current);
       puzzleRef.current.setAttribute("data-player-id", player);
       if (puzzleRef.current.puzzleEntry) {
         puzzleRef.current.puzzleEntry.prepareToReset();
