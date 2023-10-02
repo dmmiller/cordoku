@@ -17,7 +17,10 @@ import { Scores } from "@/app/(cord)/puzzle/Scores";
 
 // declare const PARTYKIT_HOST: string;
 
-const PARTYKIT_HOST = "127.0.0.1:1999";
+const PARTYKIT_HOST =
+  process.env.NODE_ENV === "development"
+    ? "127.0.0.1:1999"
+    : "cordoku.dmmiller.partykit.dev";
 
 type PuzzleDivElement = { puzzleEntry: PuzzleEntry } & HTMLDivElement;
 
