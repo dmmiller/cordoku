@@ -1,5 +1,29 @@
-import ClientThread from "./ClientThread";
+"use client";
 
-export default async function HomeWithThread() {
-  return <ClientThread />;
+import { useState } from "react";
+import ClientThread from "./ClientThread";
+import Link from "next/link";
+
+export default function HomeWithThread() {
+  const [game, setGame] = useState("");
+  const modes = ["easy", "medium", "hard"];
+  return (
+    <div>
+      <h1>Welcome to Cordoku</h1>
+      <div>
+        <label>
+          Enter game number:{" "}
+          <input value={game} onChange={(e) => setGame(e.target.value)}></input>
+        </label>
+      </div>
+      <ul>
+        {modes.map((mode) => (
+          <li key={mode}>
+            <Link href={`/puzzle/${mode}/${game}`}>{mode.toUpperCase()}</Link>
+          </li>
+        ))}
+      </ul>{" "}
+    </div>
+  );
+  // return <ClientThread />;
 }

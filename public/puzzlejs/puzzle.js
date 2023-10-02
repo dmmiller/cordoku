@@ -3,7 +3,6 @@
  * https://github.com/tabascq/PuzzleJS
  */
 var puzzleJsFolderPath = document.currentScript.src.replace("puzzle.js", "");
-console.log('in puzzle.js')
 
 // register some puzzle modes; a mode is just a set of options,
 // so the options do not need to all be learned and manually applied to each puzzle.
