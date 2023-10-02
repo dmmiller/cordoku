@@ -2,23 +2,36 @@
 
 import Script from "next/script";
 import usePartySocket from "partysocket/react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "public/puzzlejs/puzzle.css";
+import "./puzzle.css";
+
 import {
   Change,
   ClientMessage,
   PuzzleEvent,
   ServerMessage,
-} from "@/app/puzzle/PuzzleTypes";
+} from "@/app/(cord)/puzzle/PuzzleTypes";
+import { Scores } from "@/app/(cord)/puzzle/Scores";
+
 // declare const PARTYKIT_HOST: string;
 
 const PARTYKIT_HOST = "127.0.0.1:1999";
 
-export function Puzzle({ id, givens }: { id: string; givens: string[] }) {
+export function Puzzle({
+  id,
+  givens,
+  player,
+}: {
+  id: string;
+  givens: string[];
+  player: string;
+}) {
   const puzzleRef = useRef(null);
   const alternatesSet = useMemo(() => {
     return new Set<string>();
   }, []);
+  const [scores, setScores] = useState<{ playerId: string; score: number }[]>();
 
   const socket = usePartySocket({
     host: PARTYKIT_HOST,
@@ -40,8 +53,14 @@ export function Puzzle({ id, givens }: { id: string; givens: string[] }) {
         console.log("The client is not yet initialized??");
         return;
       }
-      // currently handling both revert and change messages the same
       const serverMessage: ServerMessage = JSON.parse(event.data);
+
+      if (serverMessage.type === "score") {
+        setScores(serverMessage.scores);
+        return;
+      }
+
+      // currently handling both revert and change messages the same
       const changes = serverMessage.changes;
       if (alternatesSet.has(changes[0].locationKey)) {
         changes.unshift({
@@ -66,15 +85,14 @@ export function Puzzle({ id, givens }: { id: string; givens: string[] }) {
         return;
       }
       console.log(puzzleRef.current);
-      puzzleRef.current.setAttribute("data-team-id", socket.id);
-      puzzleRef.current.setAttribute("data-player-id", socket.id);
+      puzzleRef.current.setAttribute("data-player-id", player);
       if (puzzleRef.current.puzzleEntry) {
         puzzleRef.current.puzzleEntry.prepareToReset();
       }
     });
     observer.observe(puzzleRef.current, { childList: true });
     return () => observer.disconnect();
-  }, [socket]);
+  }, [player]);
 
   const onPuzzleChange = useCallback(
     (e: Event) => {
@@ -115,6 +133,7 @@ export function Puzzle({ id, givens }: { id: string; givens: string[] }) {
         data-mode="sudoku"
       ></div>
       <Script src="/puzzlejs/puzzle.js"></Script>
+      {scores && <Scores scores={scores} />}
     </>
   );
 }

@@ -1,8 +1,4 @@
 export const puzzles = {
-  play: {
-    solution: ["PYLA", "ALYP", "YPAL", "LAPY"],
-    givens: [".Y.A", "..Y.", ".P..", "L.P."],
-  },
   easy: {
     solution: [
       "398216574",

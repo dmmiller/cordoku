@@ -28,10 +28,13 @@ export type ServerRevertMessage = {
 
 export type ServerScoreMessage = {
   type: "score";
-  scores: { team: string; score: number }[];
+  scores: { playerId: string; score: number }[];
 };
 
-export type ServerMessage = ServerChangeMessage | ServerRevertMessage;
+export type ServerMessage =
+  | ServerChangeMessage
+  | ServerRevertMessage
+  | ServerScoreMessage;
 
 export type ClientMessage = {
   change: Change;

@@ -18,7 +18,7 @@ export async function getData() {
     {
       // The user ID can be any identifier that makes sense to your application.
       // As long as it's unique per-user, Cord can use it to represent your user.
-      user_id: "tom",
+      user_id: "player-0",
 
       // Same as above. An organization ID can be any unique string. Organizations
       // are groups of users.
@@ -33,7 +33,7 @@ export async function getData() {
       },
     },
     {
-      user_id: "myhoa",
+      user_id: "player-1",
       organization_id: ORG_ID,
       user_details: {
         email: `sample-template-user2@cord.com`,
@@ -42,7 +42,7 @@ export async function getData() {
       },
     },
     {
-      user_id: "khadija",
+      user_id: "player-2",
       organization_id: ORG_ID,
       user_details: {
         email: `sample-template-user3@cord.com`,
@@ -51,7 +51,7 @@ export async function getData() {
       },
     },
     {
-      user_id: "Jack",
+      user_id: "player-3",
       organization_id: ORG_ID,
       user_details: {
         email: `sample-template-user4@cord.com`,
