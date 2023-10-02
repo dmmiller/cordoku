@@ -26,9 +26,7 @@ export function Scores({
   return (
     <ul>
       {scores
-        .sort((a, b) =>
-          a.playerId < b.playerId ? -1 : a.playerId > b.playerId ? 1 : 0
-        )
+        .sort((a, b) => b.score - a.score)
         .map((value) => {
           return (
             <Score
