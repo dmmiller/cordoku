@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run dev:partykit\" \"npm run dev:next\" --kill-others",
+    "dev:next": "next dev",
+    "dev:partykit": "partykit dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,6 +21,11 @@
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "partysocket": "0.0.8"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1",
+    "partykit": "0.0.25"
   }
 }
