@@ -28,14 +28,28 @@ export type ServerRevertMessage = {
 
 export type ServerScoreMessage = {
   type: "score";
-  scores: { playerId: string; score: number }[];
+  scores: { cordId: string; playerId: string; score: number }[];
+};
+
+export type ServerRegisterMessage = {
+  type: "register";
+  playerId: string;
 };
 
 export type ServerMessage =
   | ServerChangeMessage
+  | ServerRegisterMessage
   | ServerRevertMessage
   | ServerScoreMessage;
 
-export type ClientMessage = {
+export type ClientChangeMessage = {
+  type: "change";
   change: Change;
 };
+
+export type ClientRegisterMessage = {
+  type: "register";
+  cordId: string;
+};
+
+export type ClientMessage = ClientChangeMessage | ClientRegisterMessage;

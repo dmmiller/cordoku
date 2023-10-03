@@ -25,7 +25,7 @@ export default function PuzzlePage({
       <Puzzle
         id={`${mode}-${id}`}
         givens={puzzles["easy"].givens}
-        player={viewerData.id}
+        cordUserId={viewerData.id}
       ></Puzzle>
       <Thread threadId={`${mode}-${id}`}></Thread>
     </>

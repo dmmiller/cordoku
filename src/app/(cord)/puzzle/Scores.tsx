@@ -1,7 +1,15 @@
 import { user } from "@cord-sdk/react";
 
-function Score({ playerId, score }: { playerId: string; score: number }) {
-  const userData = user.useUserData(playerId);
+function Score({
+  cordId,
+  playerId,
+  score,
+}: {
+  cordId: string;
+  playerId: string;
+  score: number;
+}) {
+  const userData = user.useUserData(cordId);
   if (!userData) {
     return null;
   }
@@ -19,6 +27,7 @@ export function Scores({
   scores,
 }: {
   scores: {
+    cordId: string;
     playerId: string;
     score: number;
   }[];
@@ -30,7 +39,8 @@ export function Scores({
         .map((value) => {
           return (
             <Score
-              key={value.playerId}
+              key={value.cordId}
+              cordId={value.cordId}
               playerId={value.playerId}
               score={value.score}
             ></Score>
