@@ -44,7 +44,7 @@ export function Puzzle({
     return new Set<string>();
   }, []);
   const [scores, setScores] =
-    useState<{ cordId: string; playerId: String; score: number }[]>();
+    useState<{ cordId: string; playerId: string; score: number }[]>();
   const [playerId, setPlayerId] = useState<string>();
 
   const socket = usePartySocket({
