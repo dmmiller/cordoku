@@ -2,7 +2,7 @@
 
 import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
-import { Thread, user } from "@cord-sdk/react";
+import { LiveCursors, Thread, user } from "@cord-sdk/react";
 import "./puzzle-page.css";
 
 export default function PuzzlePage({
@@ -10,6 +10,7 @@ export default function PuzzlePage({
 }: {
   params: { id: string; mode: string };
 }) {
+  const location = { id, mode };
   const viewerData = user.useViewerData();
   if (!viewerData) {
     return <></>;
@@ -27,7 +28,8 @@ export default function PuzzlePage({
         givens={puzzles["easy"].givens}
         cordUserId={viewerData.id}
       ></Puzzle>
-      <Thread threadId={`${mode}-${id}`}></Thread>
+      <Thread location={location} threadId={`${mode}-${id}`}></Thread>
+      <LiveCursors location={location}></LiveCursors>
     </>
   );
 }
