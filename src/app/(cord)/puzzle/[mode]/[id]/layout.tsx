@@ -26,7 +26,7 @@ async function getData(orgId: string) {
   );
 
   const addToOrgBody = {
-    add: [userId],
+    add: [userId, "gm"],
   };
   await fetchCordRESTApi(
     `organizations/${orgId}/members`,
