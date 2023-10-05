@@ -9,7 +9,7 @@ import { CORD_USER_COOKIE } from "@/constants";
 export async function getData() {
   const userId = cookies().get(CORD_USER_COOKIE);
   if (!userId) {
-    redirect("/signin_old");
+    redirect("/signin");
   }
 
   const { CORD_SECRET, CORD_APP_ID } = process.env;
