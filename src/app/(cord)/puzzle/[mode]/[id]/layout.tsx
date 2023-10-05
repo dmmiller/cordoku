@@ -44,5 +44,5 @@ export default async function PuzzleLayout({
 }) {
   const orgId = `${params.id}-${params.mode}`;
   await getData(orgId);
-  return <>children</>;
+  return <>{children}</>;
 }
