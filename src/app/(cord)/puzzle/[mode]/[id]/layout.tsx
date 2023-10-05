@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { CORD_USER_COOKIE } from "@/constants";
 import { fetchCordRESTApi } from "@/app/api/cordFetch";
 
-export async function getData(orgId: string) {
+async function getData(orgId: string) {
   const userIdCookie = cookies().get(CORD_USER_COOKIE);
   if (!userIdCookie) {
     redirect("/signin");
@@ -44,5 +44,5 @@ export default async function PuzzleLayout({
 }) {
   const orgId = `${params.id}-${params.mode}`;
   await getData(orgId);
-  return children;
+  return <>children</>;
 }

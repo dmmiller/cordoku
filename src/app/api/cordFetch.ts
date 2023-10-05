@@ -4,7 +4,7 @@ export async function fetchCordRESTApi(
   endpoint: string,
   method: "GET" | "PUT" | "POST" | "DELETE" = "GET",
   body?: string
-): Promise<T> {
+) {
   const { CORD_SECRET, CORD_APP_ID } = process.env;
   if (!CORD_SECRET || !CORD_APP_ID) {
     throw new Error(
@@ -24,7 +24,7 @@ export async function fetchCordRESTApi(
   });
 
   if (response.ok) {
-    return response.json() as T;
+    return response.json();
   } else {
     const responseText = await response.text();
     throw new Error(
