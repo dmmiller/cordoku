@@ -21,7 +21,6 @@ export async function getData() {
 
   const user = {
     user_id: userId.value,
-    organization_id: "lobby",
     user_details: {
       name: userId.value,
     },
