@@ -1,5 +1,5 @@
 import { CORD_USER_COOKIE } from "@/constants";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default function SignIn() {
@@ -11,11 +11,15 @@ export default function SignIn() {
       return;
     }
     cookies().set(CORD_USER_COOKIE, name);
-    redirect("/");
+    const referer = headers().get('referer')
+    if (referer){
+      redirect(referer);
+    }
+    redirect('/')
   }
 
   return (
-    <form action={create}>
+    <form action={create} >
       <div>Welcome to Cordoku</div>
       <label>
         What shall we call you? <input name="name"></input>
