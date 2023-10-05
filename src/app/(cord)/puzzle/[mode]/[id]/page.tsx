@@ -4,7 +4,6 @@ import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
 import { LiveCursors, PagePresence, Thread, user } from "@cord-sdk/react";
 import "./puzzle-page.css";
-import { useEffect, useState } from "react";
 
 export default function PuzzlePage({
   params: { id, mode },
@@ -14,26 +13,7 @@ export default function PuzzlePage({
   const location = { id, mode };
   const orgId = `${id}-${mode}`;
   const viewerData = user.useViewerData();
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    if (!viewerData) {
-      return;
-    }
-    (async () => {
-      const response = await fetch("/api/addToOrg", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          org_id: orgId,
-          user_id: viewerData.id,
-        }),
-      });
-      setReady(true);
-    })();
-  }, [viewerData, orgId]);
-  if (!viewerData || !ready) {
+  if (!viewerData) {
     return <></>;
   }
   return (
