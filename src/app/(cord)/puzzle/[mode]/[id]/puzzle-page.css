@@ -29,3 +29,7 @@
 .name[data-coop-text-playerId="player-7"] {
     color: aqua;
 }
+
+.cord-live-cursors-cursor {
+  opacity: 0.75;
+}
