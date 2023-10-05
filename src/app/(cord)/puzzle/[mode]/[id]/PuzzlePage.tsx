@@ -1,10 +1,8 @@
 "use client";
-
 import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
-import { LiveCursors, PagePresence, Thread, user } from "@cord-sdk/react";
-import "./puzzle-page.css";
-import { useEffect, useState } from "react";
+import { LiveCursors, Thread, user } from "@cord-sdk/react";
+import { useEffect } from "react";
 
 export default function PuzzlePage({
   params: { id, mode },
@@ -14,7 +12,6 @@ export default function PuzzlePage({
   const location = { id, mode };
   const orgId = `${id}-${mode}`;
   const viewerData = user.useViewerData();
-  const [ready, setReady] = useState(false);
   useEffect(() => {
     if (!viewerData) {
       return;
@@ -30,10 +27,9 @@ export default function PuzzlePage({
           user_id: viewerData.id,
         }),
       });
-      setReady(true);
     })();
   }, [viewerData, orgId]);
-  if (!viewerData || !ready) {
+  if (!viewerData) {
     return <></>;
   }
   return (
