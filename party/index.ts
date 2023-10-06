@@ -60,16 +60,31 @@ export default class Server implements Party.Server {
     sender: Party.Connection
   ) {
     if (!this.cordIdToPlayerIdMap.has(message.cordId)) {
-      const playerId = `player-${this.nextPlayerId}`;
-      this.cordIdToPlayerIdMap.set(message.cordId, playerId);
+      const newPlayerId = `player-${this.nextPlayerId}`;
+      this.cordIdToPlayerIdMap.set(message.cordId, newPlayerId);
       this.nextPlayerId++;
-      this.playerIdToCordIdMap.set(playerId, message.cordId);
+      this.playerIdToCordIdMap.set(newPlayerId, message.cordId);
     }
+
+    const playerId = this.cordIdToPlayerIdMap.get(message.cordId)!;
     const registerReply: ServerRegisterMessage = {
       type: "register",
-      playerId: this.cordIdToPlayerIdMap.get(message.cordId)!,
+      playerId,
     };
     sender.send(JSON.stringify(registerReply));
+
+    // Send the current scores
+    // We use adjustScore with a delta of 0 to let everyone know the user joined
+    this.adjustScore(playerId, 0);
+
+    // Optionally send any moves that may have occurred thus far
+    if (this.changes.size > 0) {
+      const changeMessage: ServerChangeMessage = {
+        type: "change",
+        changes: [...this.changes.values()],
+      };
+      sender.send(JSON.stringify(changeMessage));
+    }
   }
 
   handleChangeMessage(message: ClientChangeMessage, sender: Party.Connection) {
@@ -121,26 +136,17 @@ export default class Server implements Party.Server {
 
   onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
     // A websocket just connected!
-    console.log(
-      `Connected:
-  id: ${conn.id}
-  room: ${this.party.id}
-  url: ${new URL(ctx.request.url).pathname}`
-    );
-
-    // let's send a message to the connection
-    if (this.changes.size > 0) {
-      const changeMessage: ServerChangeMessage = {
-        type: "change",
-        changes: [...this.changes.values()],
-      };
-      conn.send(JSON.stringify(changeMessage));
-    }
+    //   console.log(
+    //     `Connected:
+    // id: ${conn.id}
+    // room: ${this.party.id}
+    // url: ${new URL(ctx.request.url).pathname}`
+    //   );
   }
 
   onMessage(message: string, sender: Party.Connection) {
     // let's log the message
-    console.log(`connection ${sender.id} sent message: ${message}`);
+    // console.log(`connection ${sender.id} sent message: ${message}`);
 
     const clientMessage: ClientMessage = JSON.parse(message);
     switch (clientMessage.type) {
