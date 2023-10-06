@@ -1,3 +1,4 @@
+import { fetchCordRESTApi } from "@/app/api/cordFetch";
 import { CORD_USER_COOKIE, NEXT_URL_COOKIE } from "@/constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -10,6 +11,9 @@ export default function SignIn() {
     if (!name || typeof name !== "string") {
       return;
     }
+
+    await fetchCordRESTApi(`users/${name}`, "PUT", JSON.stringify({ name }));
+
     cookies().set(CORD_USER_COOKIE, name);
     const urlCallback = cookies().get(NEXT_URL_COOKIE);
     if (urlCallback?.value) {

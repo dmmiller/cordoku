@@ -8,16 +8,12 @@ import { CORD_USER_COOKIE } from "@/constants";
 export async function getData() {
   const userId = cookies().get(CORD_USER_COOKIE);
   if (!userId) {
-    throw new Error(
-      "Not authenticated. Not possible."
-    );
+    throw new Error("Not authenticated. Not possible.");
   }
 
   const { CORD_SECRET, CORD_APP_ID } = process.env;
   if (!CORD_SECRET || !CORD_APP_ID) {
-    throw new Error(
-      "Missing CORD_SECRET or CORD_ORD_ID env variable. Get it on console.cord.com and add it to .env",
-    );
+    throw new Error("Missing CORD_SECRET or CORD_ORD_ID env variable");
   }
 
   const user = {
