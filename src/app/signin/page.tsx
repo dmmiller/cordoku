@@ -16,7 +16,7 @@ export default function SignIn() {
 
   return (
     <form action={create}>
-      <div>Welcome to Cordoku</div>
+      <h1>Welcome to Cordoku</h1>
       <label>
         What shall we call you? <input name="name"></input>
       </label>

@@ -15,7 +15,7 @@ export async function getData() {
   const { CORD_SECRET, CORD_APP_ID } = process.env;
   if (!CORD_SECRET || !CORD_APP_ID) {
     throw new Error(
-      "Missing CORD_SECRET or CORD_ORD_ID env variable. Get it on console.cord.com and add it to .env"
+      "Missing CORD_SECRET or CORD_ORD_ID env variable. Get it on console.cord.com and add it to .env",
     );
   }
 

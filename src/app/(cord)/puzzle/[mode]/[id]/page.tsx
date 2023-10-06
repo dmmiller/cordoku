@@ -4,6 +4,7 @@ import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
 import { LiveCursors, PagePresence, Thread, user } from "@cord-sdk/react";
 import "./puzzle-page.css";
+import styles from "./puzzle.module.css";
 
 export default function PuzzlePage({
   params: { id, mode },
@@ -17,8 +18,8 @@ export default function PuzzlePage({
     return <></>;
   }
   return (
-    <>
-      <div>Hello {viewerData.name}</div>
+    <div className={styles.container}>
+      <div className={styles.hello}>Hello {viewerData.name}</div>
       {/* <PagePresence location={location} /> */}
       <Puzzle
         id={`${mode}-${id}`}
@@ -26,11 +27,12 @@ export default function PuzzlePage({
         cordUserId={viewerData.id}
       ></Puzzle>
       <Thread
+        className={styles.thread}
         location={location}
         threadId={`${mode}-${id}`}
         organizationId={orgId}
       />
       <LiveCursors location={location} organizationID={orgId} />
-    </>
+    </div>
   );
 }

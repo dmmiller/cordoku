@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import styles from "./styles.module.css";
+import "./reset.css";
+import "./global.css";
 
 export const metadata: Metadata = {
   title: "Cordoku",
@@ -12,7 +15,12 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <header className={styles.header}>
+          <h1>Cordoku</h1>
+        </header>
+        <section className={styles.content}>{children}</section>
+      </body>
     </html>
   );
 }
