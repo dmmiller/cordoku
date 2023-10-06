@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { getClientAuthToken } from "@cord-sdk/server";
 import CordIntegration from "./CordIntegration";
 import "./cord.css";
@@ -9,7 +8,9 @@ import { CORD_USER_COOKIE } from "@/constants";
 export async function getData() {
   const userId = cookies().get(CORD_USER_COOKIE);
   if (!userId) {
-    redirect("/signin");
+    throw new Error(
+      "Not authenticated. Not possible."
+    );
   }
 
   const { CORD_SECRET, CORD_APP_ID } = process.env;

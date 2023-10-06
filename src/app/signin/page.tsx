@@ -1,4 +1,4 @@
-import { CORD_USER_COOKIE } from "@/constants";
+import { CORD_USER_COOKIE, NEXT_URL_COOKIE } from "@/constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -11,6 +11,11 @@ export default function SignIn() {
       return;
     }
     cookies().set(CORD_USER_COOKIE, name);
+    const urlCallback = cookies().get(NEXT_URL_COOKIE);
+    if (urlCallback?.value) {
+      cookies().delete(NEXT_URL_COOKIE);
+      redirect(urlCallback.value);
+    }
     redirect("/");
   }
 
