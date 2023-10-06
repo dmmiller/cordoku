@@ -46,6 +46,8 @@ export function Puzzle({
   const [scores, setScores] =
     useState<{ cordId: string; playerId: string; score: number }[]>();
   const [playerId, setPlayerId] = useState<string>();
+  const [queuedChanges, setQueuedChanges] = useState<Change[]>([]);
+  const [runPostScriptWorkload, setRunPostScriptWorkload] = useState(false);
 
   const socket = usePartySocket({
     host: PARTYKIT_HOST,
@@ -57,14 +59,8 @@ export function Puzzle({
       };
       sendMessage(registerMessage);
     },
-    onClose: (event) => {
-      console.log("socketClose");
-      console.log(event);
-    },
-    onError: (event) => {
-      console.log("socketError");
-      console.log(event);
-    },
+    onClose: (_event) => {},
+    onError: (_event) => {},
     onMessage: (event) => {
       console.log(event.data);
       const serverMessage: ServerMessage = JSON.parse(event.data);
@@ -87,7 +83,6 @@ export function Puzzle({
   const handleChangeMessage = useCallback(
     (message: ServerChangeMessage | ServerRevertMessage) => {
       if (!puzzleRef.current) {
-        console.log("The client is not initialized??");
         return;
       }
       // currently handling both revert and change messages the same
@@ -102,9 +97,14 @@ export function Puzzle({
           teamId: changes[0].teamId,
         });
       }
-      puzzleRef.current.puzzleEntry!.changeWithoutUndo(changes);
+      if (!puzzleRef.current.puzzleEntry) {
+        // Queue the changes for later after any we may have queued
+        setQueuedChanges([...queuedChanges, ...changes]);
+        return;
+      }
+      puzzleRef.current.puzzleEntry.changeWithoutUndo(changes);
     },
-    [puzzleRef, alternatesSet]
+    [puzzleRef, alternatesSet, queuedChanges]
   );
 
   const handleRegisterMessage = useCallback(
@@ -131,20 +131,22 @@ export function Puzzle({
   // into the actual html after loading the script, we need to do a few things
   // once the dom is set up.  This block of code does those necessary things.
   useEffect(() => {
+    if (!runPostScriptWorkload) {
+      return;
+    }
     if (!puzzleRef.current) {
       return;
     }
-    const observer = new MutationObserver(() => {
-      if (!puzzleRef.current) {
-        return;
-      }
-      if (puzzleRef.current.puzzleEntry) {
-        puzzleRef.current.puzzleEntry.prepareToReset();
-      }
-    });
-    observer.observe(puzzleRef.current, { childList: true });
-    return () => observer.disconnect();
-  }, [cordUserId]);
+    if (!puzzleRef.current.puzzleEntry) {
+      return;
+    }
+    puzzleRef.current.puzzleEntry.prepareToReset();
+    if (queuedChanges.length > 0) {
+      puzzleRef.current.puzzleEntry.changeWithoutUndo(queuedChanges);
+      setQueuedChanges([]);
+    }
+    setRunPostScriptWorkload(false);
+  }, [queuedChanges, runPostScriptWorkload]);
 
   useEffect(() => {
     if (!puzzleRef.current || !playerId) {
@@ -192,7 +194,10 @@ export function Puzzle({
         data-text={givens.join("|")}
         data-mode="sudoku"
       ></div>
-      <Script src="/puzzlejs/puzzle.js"></Script>
+      <Script
+        src="/puzzlejs/puzzle.js"
+        onLoad={() => setRunPostScriptWorkload(true)}
+      />
       {scores && <Scores scores={scores} />}
     </>
   );
