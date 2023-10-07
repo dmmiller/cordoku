@@ -10,7 +10,6 @@ import {
   ServerScoreMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
-import { send } from "process";
 
 const puzzle = puzzles["easy"].solution;
 const keys: Record<string, string> = {};
