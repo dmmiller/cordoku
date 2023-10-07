@@ -83,7 +83,6 @@ function swapColumnBlocks(
 // ?? 9, 10 -> Cipher
 // ?? Something else
 export function selectPuzzle(mode: Mode, id: string) {
-  console.log("called with ", mode, id);
   const hash = createHash("sha256");
   hash.update(`${mode}-${id}`);
   const key = hash.digest("hex");

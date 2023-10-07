@@ -7,12 +7,14 @@ import "./puzzle-page.css";
 import styles from "./puzzle.module.css";
 
 export default function ClientPuzzlePage({
+  partyKitHost,
   roomId,
   givens,
   location,
   orgId,
   threadId,
 }: {
+  partyKitHost: string;
   roomId: string;
   givens: string[];
   location: Location;
@@ -27,6 +29,7 @@ export default function ClientPuzzlePage({
     <div className={styles.container}>
       <div className={styles.hello}>Hello {viewerData.name}</div>
       <Puzzle
+        partyKitHost={partyKitHost}
         roomId={roomId}
         givens={givens}
         cordUserId={viewerData.id}

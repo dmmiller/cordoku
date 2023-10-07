@@ -21,20 +21,15 @@ import {
 } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { Scores } from "@/app/(cord)/puzzle/Scores";
 
-// declare const PARTYKIT_HOST: string;
-
-const PARTYKIT_HOST =
-  process.env.NODE_ENV === "development"
-    ? "127.0.0.1:1999"
-    : "cordoku.dmmiller.partykit.dev";
-
 type PuzzleDivElement = { puzzleEntry: PuzzleEntry } & HTMLDivElement;
 
 export function Puzzle({
+  partyKitHost,
   roomId,
   givens,
   cordUserId,
 }: {
+  partyKitHost: string;
   roomId: string;
   givens: string[];
   cordUserId: string;
@@ -50,7 +45,7 @@ export function Puzzle({
   const [runPostScriptWorkload, setRunPostScriptWorkload] = useState(false);
 
   const socket = usePartySocket({
-    host: PARTYKIT_HOST,
+    host: partyKitHost,
     room: roomId,
     onOpen: (event) => {
       const registerMessage: ClientRegisterMessage = {

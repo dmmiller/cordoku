@@ -11,17 +11,22 @@ export default function PuzzlePage({
 }: {
   params: { id: string; mode: Mode };
 }) {
+  const { PARTYKIT_HOST } = process.env;
+  if (!PARTYKIT_HOST) {
+    throw new Error("Forgot to set PARTYKIT_HOST");
+  }
+  const roomId = buildRoomId(mode, id);
+  const givens = selectPuzzle(mode, id).givens;
   const location = { id, mode };
   const orgId = buildOrgId(mode, id);
-  const givens = selectPuzzle(mode, id).givens;
-  const roomId = buildRoomId(mode, id);
   const threadId = buildThreadId(mode, id);
   return (
     <ClientPuzzlePage
+      partyKitHost={PARTYKIT_HOST}
+      roomId={roomId}
+      givens={givens}
       location={location}
       orgId={orgId}
-      givens={givens}
-      roomId={roomId}
       threadId={threadId}
     />
   );
