@@ -23,7 +23,7 @@ export default function PuzzlePage({
       {/* <PagePresence location={location} /> */}
       <Puzzle
         id={`${mode}-${id}`}
-        givens={puzzles["easy"].givens}
+        givens={puzzles["easy"][0].givens}
         cordUserId={viewerData.id}
       ></Puzzle>
       <Thread

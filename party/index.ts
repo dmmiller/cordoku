@@ -11,7 +11,7 @@ import {
 } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
 
-const puzzle = puzzles["easy"].solution;
+const puzzle = puzzles["easy"][0].solution;
 const keys: Record<string, string> = {};
 puzzle.forEach((row, index) => {
   for (let c = 0; c < row.length; c++) {
