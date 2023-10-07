@@ -9,15 +9,8 @@ import {
   ServerRevertMessage,
   ServerScoreMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
-import { puzzles } from "@/app/(cord)/puzzle/Puzzles";
-
-const puzzle = puzzles["easy"][0].solution;
-const keys: Record<string, string> = {};
-puzzle.forEach((row, index) => {
-  for (let c = 0; c < row.length; c++) {
-    keys[`cell-${index}-${c}`] = row[c];
-  }
-});
+import { Mode, selectPuzzle } from "@/app/(cord)/puzzle/Puzzles";
+import { getModeIdFromRoomId } from "@/app/(cord)/puzzle/utils";
 
 export default class Server implements Party.Server {
   changes: Map<string, Change>;
@@ -25,6 +18,8 @@ export default class Server implements Party.Server {
   nextPlayerId: number;
   cordIdToPlayerIdMap: Map<string, string>;
   playerIdToCordIdMap: Map<string, string>;
+  keys: Record<string, string>;
+  solution: string[];
 
   constructor(readonly party: Party.Party) {
     this.changes = new Map();
@@ -32,6 +27,8 @@ export default class Server implements Party.Server {
     this.nextPlayerId = 0;
     this.cordIdToPlayerIdMap = new Map();
     this.playerIdToCordIdMap = new Map();
+    this.keys = {};
+    this.solution = [];
   }
 
   adjustScore(playerId: string, delta: number) {
@@ -103,7 +100,7 @@ export default class Server implements Party.Server {
       return;
     }
 
-    if (keys[location] !== value) {
+    if (this.keys[location] !== value) {
       change.value = null;
       const revertMessage: ServerRevertMessage = {
         type: "revert",
@@ -125,28 +122,32 @@ export default class Server implements Party.Server {
     };
 
     // as well as broadcast it to all the other connections in the room...
-    this.party.broadcast(
-      JSON.stringify(changeMessage),
-      // `${sender.id}: ${message}`,
-      // ...except for the connection it came from
-      [sender.id]
-    );
+    this.party.broadcast(JSON.stringify(changeMessage), [sender.id]);
   }
 
   onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
-    // A websocket just connected!
-    //   console.log(
-    //     `Connected:
-    // id: ${conn.id}
-    // room: ${this.party.id}
-    // url: ${new URL(ctx.request.url).pathname}`
-    //   );
+    // In onConnect, let's set up the puzzle with solutions
+    // Only do this once so if we have the solution don't compute again
+    if (this.solution.length > 0) {
+      return;
+    }
+
+    const data = getModeIdFromRoomId(this.party.id);
+    if (data === null) {
+      console.error("This is an invalid room");
+      conn.close();
+      return;
+    }
+
+    this.solution = selectPuzzle(data.mode, data.id).solution;
+    this.solution.forEach((row, index) => {
+      for (let c = 0; c < row.length; c++) {
+        this.keys[`cell-${index}-${c}`] = row[c];
+      }
+    });
   }
 
   onMessage(message: string, sender: Party.Connection) {
-    // let's log the message
-    // console.log(`connection ${sender.id} sent message: ${message}`);
-
     const clientMessage: ClientMessage = JSON.parse(message);
     switch (clientMessage.type) {
       case "register":
