@@ -146,11 +146,10 @@ export default class Server implements Party.Server {
     //   Uncomment the call to selectPuzzle
     //   Remove async from this method
     //   Add "compatibilityFlags": ["nodejs_compat"] to partykit.json to enable node execution with crypto
-    const NEXTJS_HOST =
+    const NEXTJS_HOST = //"https://cordoku.vercel.app";
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
         : "https://cordoku.vercel.app";
-    console.log(NEXTJS_HOST);
 
     const request = await fetch(
       `${NEXTJS_HOST}/api/puzzle/${data.mode}/${data.id}`
