@@ -20,7 +20,6 @@ import {
   ServerScoreMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { Scores } from "@/app/(cord)/puzzle/Scores";
-import { buildPartyId, buildRoomId } from "@/app/(cord)/puzzle/utils";
 
 // declare const PARTYKIT_HOST: string;
 
