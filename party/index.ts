@@ -20,6 +20,7 @@ export default class Server implements Party.Server {
   playerIdToCordIdMap: Map<string, string>;
   keys: Record<string, string>;
   solution: string[];
+  nextJSHost: string;
 
   constructor(readonly party: Party.Party) {
     this.changes = new Map();
@@ -29,6 +30,7 @@ export default class Server implements Party.Server {
     this.playerIdToCordIdMap = new Map();
     this.keys = {};
     this.solution = [];
+    this.nextJSHost = party.env["NEXTJS_HOST"] as string;
   }
 
   adjustScore(playerId: string, delta: number) {
@@ -145,14 +147,10 @@ export default class Server implements Party.Server {
     //   Remove all lines between START and END
     //   Uncomment the call to selectPuzzle
     //   Remove async from this method
+    //   Remove nextJSHost from the class properties
     //   Add "compatibilityFlags": ["nodejs_compat"] to partykit.json to enable node execution with crypto
-    const NEXTJS_HOST = //"https://cordoku.vercel.app";
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:3000"
-        : "https://cordoku.vercel.app";
-
     const request = await fetch(
-      `${NEXTJS_HOST}/api/puzzle/${data.mode}/${data.id}`
+      `${this.nextJSHost}/api/puzzle/${data.mode}/${data.id}`
     );
     this.solution = (await request.json()).solution.map((value: any) =>
       value.toString()
