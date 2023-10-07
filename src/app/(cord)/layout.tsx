@@ -1,4 +1,4 @@
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { getClientAuthToken } from "@cord-sdk/server";
 import CordIntegration from "./CordIntegration";
 import "./cord.css";
