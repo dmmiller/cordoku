@@ -19,4 +19,5 @@
 .thread {
   grid-column-start: 1;
   grid-column-end: -1;
+  max-height: 50vh;
 }

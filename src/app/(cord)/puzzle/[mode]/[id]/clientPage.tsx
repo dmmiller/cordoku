@@ -36,6 +36,7 @@ export default function ClientPuzzlePage({
         location={location}
         threadId={threadId}
         organizationId={orgId}
+        showPlaceholder={false}
       />
       <LiveCursors location={location} organizationID={orgId} />
     </div>
