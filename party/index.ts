@@ -155,7 +155,7 @@ export default class Server implements Party.Server {
     const request = await fetch(
       `${NEXTJS_HOST}/api/puzzle/${data.mode}/${data.id}`
     );
-    this.solution = (await request.json()).solution.map((value) =>
+    this.solution = (await request.json()).solution.map((value: any) =>
       value.toString()
     );
     // END TEMPORARY CODE
