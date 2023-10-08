@@ -9,7 +9,7 @@ import {
   ServerRevertMessage,
   ServerScoreMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
-import { Mode, selectPuzzle } from "@/app/(cord)/puzzle/Puzzles";
+import { selectPuzzle } from "@/app/(cord)/puzzle/Puzzles";
 import { getModeIdFromRoomId } from "@/app/(cord)/puzzle/utils";
 
 export default class Server implements Party.Server {
@@ -20,7 +20,6 @@ export default class Server implements Party.Server {
   playerIdToCordIdMap: Map<string, string>;
   keys: Record<string, string>;
   solution: string[];
-  nextJSHost: string;
 
   constructor(readonly party: Party.Party) {
     this.changes = new Map();
@@ -30,7 +29,6 @@ export default class Server implements Party.Server {
     this.playerIdToCordIdMap = new Map();
     this.keys = {};
     this.solution = [];
-    this.nextJSHost = party.env["NEXTJS_HOST"] as string;
   }
 
   adjustScore(playerId: string, delta: number) {
@@ -127,7 +125,7 @@ export default class Server implements Party.Server {
     this.party.broadcast(JSON.stringify(changeMessage), [sender.id]);
   }
 
-  async onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
+  onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
     // In onConnect, let's set up the puzzle with solutions
     // Only do this once so if we have the solution don't compute again
     if (this.solution.length > 0) {
@@ -141,23 +139,8 @@ export default class Server implements Party.Server {
       return;
     }
 
-    // START TEMPORARY CODE
-    // We do this until partykit fixes the server to allow crypto import
-    // To undo:
-    //   Remove all lines between START and END
-    //   Uncomment the call to selectPuzzle
-    //   Remove async from this method
-    //   Remove nextJSHost from the class properties
-    //   Add "compatibilityFlags": ["nodejs_compat"] to partykit.json to enable node execution with crypto
-    const request = await fetch(
-      `${this.nextJSHost}/api/puzzle/${data.mode}/${data.id}`
-    );
-    this.solution = (await request.json()).solution.map((value: any) =>
-      value.toString()
-    );
-    // END TEMPORARY CODE
-
-    // this.solution = selectPuzzle(data.mode, data.id).solution;
+    console.log("Generating puzzle for ", this.party.id);
+    this.solution = selectPuzzle(data.mode, data.id).solution;
     this.solution.forEach((row, index) => {
       for (let c = 0; c < row.length; c++) {
         this.keys[`cell-${index}-${c}`] = row[c];
