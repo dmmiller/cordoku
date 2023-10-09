@@ -13,6 +13,17 @@ export default function SignIn() {
     }
 
     await fetchCordRESTApi(`users/${name}`, "PUT", JSON.stringify({ name }));
+    // BEGIN TEMPORARY WORKAROUND
+    // Currently loading the CordProvider with a user who is in 0 orgs causes a problem
+    // Let's put all new users into the 'lobby' org just to have them in an org
+    await fetchCordRESTApi(
+      `organizations/lobby/members`,
+      "POST",
+      JSON.stringify({
+        add: [name],
+      })
+    );
+    // END TEMPORARY WORKAROUND
 
     cookies().set(CORD_USER_COOKIE, name);
     const urlCallback = cookies().get(NEXT_URL_COOKIE);
