@@ -1,31 +1,31 @@
 .puzzle-entry .cell[data-coop-text-playerId="player-0"] {
-    color: red;
+  color: red;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-1"] {
-    color: orange;
+  color: orange;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-2"] {
-    color: blue;
+  color: blue;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-3"] {
-    color: green;
+  color: green;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-4"] {
-    color: yellow;
+  color: yellow;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-5"] {
-    color: purple;
+  color: purple;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-6"] {
-    color: magenta;
+  color: magenta;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-7"] {
-    color: aqua;
+  color: aqua;
 }

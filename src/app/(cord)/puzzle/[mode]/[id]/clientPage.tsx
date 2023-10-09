@@ -32,6 +32,8 @@ export default function ClientPuzzlePage({
         partyKitHost={partyKitHost}
         roomId={roomId}
         givens={givens}
+        location={location}
+        orgId={orgId}
         cordUserId={viewerData.id}
       ></Puzzle>
       <Thread

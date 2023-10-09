@@ -3,6 +3,7 @@
 import Script from "next/script";
 import usePartySocket from "partysocket/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Location } from "@cord-sdk/types";
 import "public/puzzlejs/puzzle.css";
 import "./puzzle.css";
 
@@ -20,18 +21,24 @@ import {
   ServerScoreMessage,
 } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { Scores } from "@/app/(cord)/puzzle/Scores";
+import { presence } from "@cord-sdk/react";
 
 type PuzzleDivElement = { puzzleEntry: PuzzleEntry } & HTMLDivElement;
+type GridLocation = { cell: string; playerId: string } & Location;
 
 export function Puzzle({
   partyKitHost,
   roomId,
   givens,
+  location,
+  orgId,
   cordUserId,
 }: {
   partyKitHost: string;
   roomId: string;
   givens: string[];
+  location: Location;
+  orgId: string;
   cordUserId: string;
 }) {
   const puzzleRef = useRef<PuzzleDivElement>(null);
@@ -43,6 +50,12 @@ export function Puzzle({
   const [playerId, setPlayerId] = useState<string>();
   const [queuedChanges, setQueuedChanges] = useState<Change[]>([]);
   const [runPostScriptWorkload, setRunPostScriptWorkload] = useState(false);
+  const gridLocation: Location = useMemo(() => {
+    return { ...location, grid: roomId };
+  }, [location, roomId]);
+  const knownUsersMap = useMemo(() => {
+    return new Map<string, string>();
+  }, []);
 
   const socket = usePartySocket({
     host: partyKitHost,
@@ -180,6 +193,75 @@ export function Puzzle({
     return () => document.removeEventListener("puzzlechanged", onPuzzleChange);
   }, [onPuzzleChange]);
 
+  const present = presence.useLocationData(gridLocation, {
+    exclude_durable: true,
+    partial_match: true,
+  });
+  if (present) {
+    // addMap is a map of userid -> [playerId, cell]
+    const addMap = new Map<string, [string, string]>();
+    const updateSet = new Set<string>();
+    present.forEach((value) => {
+      const userId = value.id;
+      updateSet.add(userId);
+      const locations = value.ephemeral.locations as GridLocation[];
+      if (locations.length > 0) {
+        addMap.set(userId, [
+          locations[locations.length - 1].playerId,
+          locations[locations.length - 1].cell,
+        ]);
+      }
+    });
+    updateSet.forEach((user) => {
+      const cell = knownUsersMap.get(user);
+      if (cell) {
+        // clear the old cell
+        const oldElement = document.getElementById(cell);
+        oldElement?.removeAttribute("data-cordoku-cell-present");
+        knownUsersMap.delete(user);
+      }
+    });
+    addMap.forEach(([playerId, cell], user) => {
+      const newElement = document.getElementById(cell);
+      newElement?.setAttribute("data-cordoku-cell-present", playerId);
+      knownUsersMap.set(user, cell);
+    });
+  }
+
+  const onFocus = useCallback(
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      if (!playerId) {
+        return;
+      }
+      window.CordSDK?.presence.setPresent(
+        {
+          ...gridLocation,
+          cell: e.target.id,
+          playerId,
+        },
+        { organizationID: orgId, exclusive_within: gridLocation }
+      );
+    },
+    [gridLocation, playerId, orgId]
+  );
+
+  const onBlur = useCallback(
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      if (!playerId) {
+        return;
+      }
+      window.CordSDK?.presence.setPresent(
+        { ...gridLocation, cell: e.target.id, playerId },
+        {
+          organizationID: orgId,
+          absent: true,
+          exclusive_within: gridLocation,
+        }
+      );
+    },
+    [gridLocation, playerId, orgId]
+  );
+
   return (
     <>
       <div
@@ -188,6 +270,8 @@ export function Puzzle({
         data-edges="3x3"
         data-text={givens.join("|")}
         data-mode="sudoku"
+        onFocus={(e) => onFocus(e)}
+        onBlur={(e) => onBlur(e)}
       ></div>
       <Script
         src="/puzzlejs/puzzle.js"
