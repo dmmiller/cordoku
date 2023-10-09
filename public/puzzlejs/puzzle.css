@@ -3,12 +3,9 @@
  * https://github.com/tabascq/PuzzleJS
  */
 .puzzle-entry {
-  grid-row: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  min-width: 360px;
-  line-height:1;
 
   /* Make background colors print faithfully. */
   -webkit-print-color-adjust: exact;
@@ -41,15 +38,8 @@
   font-family: monospace;
   border: none;
   color: black;
-  text-shadow:
-    -2px -2px 0 #fff,
-    0 -2px 0 #fff,
-    2px -2px 0 #fff,
-    2px 0 0 #fff,
-    2px 2px 0 #fff,
-    0 2px 0 #fff,
-    -2px 2px 0 #fff,
-    -2px 0 0 #fff;
+  text-shadow: -2px -2px 0 #fff, 0 -2px 0 #fff, 2px -2px 0 #fff, 2px 0 0 #fff,
+    2px 2px 0 #fff, 0 2px 0 #fff, -2px 2px 0 #fff, -2px 0 0 #fff;
   user-select: none;
   cursor: pointer;
   text-transform: uppercase;

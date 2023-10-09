@@ -3,7 +3,6 @@
 import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { LiveCursors, Thread, user } from "@cord-sdk/react";
 import { Location } from "@cord-sdk/types";
-import "./puzzle-page.css";
 import styles from "./puzzle.module.css";
 
 export default function ClientPuzzlePage({

@@ -17,7 +17,7 @@ export default function SignIn() {
     // Currently loading the CordProvider with a user who is in 0 orgs causes a problem
     // Let's put all new users into the 'lobby' org just to have them in an org
     await fetchCordRESTApi(
-      `organizations/lobby/members`,
+      "organizations/lobby/members",
       "POST",
       JSON.stringify({
         add: [name],
