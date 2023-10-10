@@ -10,12 +10,17 @@ function Score({
   score: number;
 }) {
   const userData = user.useUserData(cordId);
-  if (!userData) {
+  const self = user.useViewerData();
+  if (!userData || !self) {
     return null;
   }
   return (
     <li>
-      <span className="name" data-coop-text-playerid={playerId}>
+      <span
+        className="name"
+        data-coop-text-playerid={playerId}
+        style={self.id === userData.id ? { fontWeight: "bold" } : {}}
+      >
         {userData.name}
       </span>{" "}
       : {score}
