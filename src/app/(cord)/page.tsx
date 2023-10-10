@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-export default function HomeWithThread() {
+export default function LobbyPage() {
   const [game, setGame] = useState("");
   const modes = ["easy", "medium", "hard"];
   return (
@@ -24,5 +24,4 @@ export default function HomeWithThread() {
       </ul>{" "}
     </div>
   );
-  // return <ClientThread />;
 }

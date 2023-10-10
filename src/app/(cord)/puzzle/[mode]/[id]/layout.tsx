@@ -4,6 +4,8 @@ import { CORD_USER_COOKIE } from "@/constants";
 import { fetchCordRESTApi } from "@/app/api/cordFetch";
 import { Mode } from "@/app/(cord)/puzzle/Puzzles";
 import { buildOrgId } from "@/app/(cord)/puzzle/utils";
+import { getClientAuthToken } from "@cord-sdk/server";
+import CordIntegration from "@/app/(cord)/CordIntegration";
 
 async function getData(mode: Mode, id: string) {
   const userIdCookie = cookies().get(CORD_USER_COOKIE);
@@ -37,6 +39,19 @@ async function getData(mode: Mode, id: string) {
     "POST",
     JSON.stringify(addToOrgBody)
   );
+
+  const user = {
+    user_id: userId,
+    user_details: {
+      name: userId,
+    },
+  };
+
+  const clientAuthToken = getClientAuthToken(CORD_APP_ID, CORD_SECRET, {
+    ...user,
+  });
+
+  return { clientAuthToken };
 }
 
 export default async function PuzzleLayout({
@@ -46,6 +61,10 @@ export default async function PuzzleLayout({
   children: React.ReactNode;
   params: { mode: Mode; id: string };
 }) {
-  await getData(params.mode, params.id);
-  return <>{children}</>;
+  const { clientAuthToken } = await getData(params.mode, params.id);
+  return (
+    <CordIntegration clientAuthToken={clientAuthToken}>
+      {children}
+    </CordIntegration>
+  );
 }
