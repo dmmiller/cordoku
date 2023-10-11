@@ -20,6 +20,8 @@ export type ScoreEntry = {
   cordId: string;
   playerId: string;
   score: number;
+  correct: number;
+  incorrect: number;
 };
 
 export type ServerChangeMessage = {

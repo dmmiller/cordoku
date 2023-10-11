@@ -16,7 +16,7 @@ import { getModeIdFromRoomId } from "@/app/(cord)/puzzle/utils";
 
 export default class Server implements Party.Server {
   changes: Map<string, Change>;
-  scores: Map<string, number>;
+  scores: Map<string, number[]>;
   nextPlayerId: number;
   cordIdToPlayerIdMap: Map<string, string>;
   playerIdToCordIdMap: Map<string, string>;
@@ -41,7 +41,9 @@ export default class Server implements Party.Server {
       scores.push({
         cordId: this.playerIdToCordIdMap.get(key)!,
         playerId: key,
-        score: value,
+        score: value[0],
+        correct: value[1],
+        incorrect: value[2],
       });
     });
     return scores;
@@ -49,9 +51,16 @@ export default class Server implements Party.Server {
 
   adjustScore(playerId: string, delta: number) {
     if (!this.scores.has(playerId)) {
-      this.scores.set(playerId, 0);
+      this.scores.set(playerId, [0, 0, 0]);
     }
-    this.scores.set(playerId, (this.scores.get(playerId) as number) + delta);
+    const currentScores = this.scores.get(playerId)!;
+    if (delta === 1) {
+      currentScores[1] += 1;
+    } else if (delta === -1) {
+      currentScores[2] += 1;
+    }
+    currentScores[0] += delta;
+    this.scores.set(playerId, currentScores);
     // Send an update
     const scoreMessage: ServerScoreMessage = {
       type: "score",
