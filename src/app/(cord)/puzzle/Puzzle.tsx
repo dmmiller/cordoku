@@ -14,6 +14,7 @@ import {
   ClientRegisterMessage,
   PuzzleEntry,
   PuzzleEvent,
+  ScoreEntry,
   ServerChangeMessage,
   ServerGameOverMessage,
   ServerMessage,
@@ -48,8 +49,7 @@ export function Puzzle({
   const alternatesSet = useMemo(() => {
     return new Set<string>();
   }, []);
-  const [scores, setScores] =
-    useState<{ cordId: string; playerId: string; score: number }[]>();
+  const [scores, setScores] = useState<ScoreEntry[]>();
   const [playerId, setPlayerId] = useState<string>();
   const [queuedChanges, setQueuedChanges] = useState<Change[]>([]);
   const [runPostScriptWorkload, setRunPostScriptWorkload] = useState(false);
@@ -140,10 +140,18 @@ export function Puzzle({
       setScores(message.scores);
       let winnerId = "";
       let maxScore = 0;
-      message.scores.forEach(({ cordId, score }) => {
+      let maxAccuracy = 0;
+      message.scores.forEach(({ cordId, score, correct, incorrect }) => {
         if (score > maxScore) {
           winnerId = cordId;
           maxScore = score;
+          maxAccuracy = (correct / (correct + incorrect)) * 100;
+        } else if (score == maxScore) {
+          const accuracy = (correct / (correct + incorrect)) * 100;
+          if (accuracy > maxAccuracy) {
+            winnerId = cordId;
+            maxAccuracy = accuracy;
+          }
         }
       });
       onGameEnd(winnerId);

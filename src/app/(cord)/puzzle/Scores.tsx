@@ -1,13 +1,16 @@
+import { ScoreEntry } from "@/app/(cord)/puzzle/PuzzleTypes";
 import { user } from "@cord-sdk/react";
 
 function Score({
   cordId,
   playerId,
   score,
+  accuracy,
 }: {
   cordId: string;
   playerId: string;
   score: number;
+  accuracy: number;
 }) {
   const userData = user.useUserData(cordId);
   const self = user.useViewerData();
@@ -23,24 +26,21 @@ function Score({
       >
         {userData.name}
       </span>{" "}
-      : {score}
+      : {score} ({accuracy.toFixed(0)}% correct)
     </li>
   );
 }
 
-export function Scores({
-  scores,
-}: {
-  scores: {
-    cordId: string;
-    playerId: string;
-    score: number;
-  }[];
-}) {
+export function Scores({ scores }: { scores: ScoreEntry[] }) {
   return (
     <ul>
       {scores
-        .sort((a, b) => b.score - a.score)
+        .sort((a, b) =>
+          b.score === a.score
+            ? (b.correct / (b.correct + b.incorrect)) * 100 -
+              (a.correct / (a.correct + a.incorrect)) * 100
+            : b.score - a.score
+        )
         .map((value) => {
           return (
             <Score
@@ -48,7 +48,10 @@ export function Scores({
               cordId={value.cordId}
               playerId={value.playerId}
               score={value.score}
-            ></Score>
+              accuracy={
+                (value.correct / (value.correct + value.incorrect)) * 100
+              }
+            />
           );
         })}
     </ul>
