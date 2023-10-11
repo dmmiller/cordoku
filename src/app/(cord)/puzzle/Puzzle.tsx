@@ -145,12 +145,16 @@ export function Puzzle({
         if (score > maxScore) {
           winnerId = cordId;
           maxScore = score;
-          maxAccuracy = (correct / (correct + incorrect)) * 100;
+          if (correct + incorrect > 0) {
+            maxAccuracy = (correct / (correct + incorrect)) * 100;
+          }
         } else if (score == maxScore) {
-          const accuracy = (correct / (correct + incorrect)) * 100;
-          if (accuracy > maxAccuracy) {
-            winnerId = cordId;
-            maxAccuracy = accuracy;
+          if (correct + incorrect > 0) {
+            const accuracy = (correct / (correct + incorrect)) * 100;
+            if (accuracy > maxAccuracy) {
+              winnerId = cordId;
+              maxAccuracy = accuracy;
+            }
           }
         }
       });

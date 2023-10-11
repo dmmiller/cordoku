@@ -37,8 +37,10 @@ export function Scores({ scores }: { scores: ScoreEntry[] }) {
       {scores
         .sort((a, b) =>
           b.score === a.score
-            ? (b.correct / (b.correct + b.incorrect)) * 100 -
-              (a.correct / (a.correct + a.incorrect)) * 100
+            ? b.correct + b.incorrect > 0 && a.correct + a.correct > 0
+              ? (b.correct / (b.correct + b.incorrect)) * 100 -
+                (a.correct / (a.correct + a.incorrect)) * 100
+              : 0
             : b.score - a.score
         )
         .map((value) => {
@@ -49,7 +51,9 @@ export function Scores({ scores }: { scores: ScoreEntry[] }) {
               playerId={value.playerId}
               score={value.score}
               accuracy={
-                (value.correct / (value.correct + value.incorrect)) * 100
+                value.correct + value.incorrect > 0
+                  ? (value.correct / (value.correct + value.incorrect)) * 100
+                  : 100
               }
             />
           );
