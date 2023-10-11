@@ -15,6 +15,7 @@ import {
   PuzzleEntry,
   PuzzleEvent,
   ServerChangeMessage,
+  ServerGameOverMessage,
   ServerMessage,
   ServerRegisterMessage,
   ServerRevertMessage,
@@ -56,6 +57,7 @@ export function Puzzle({
   const knownUsersMap = useMemo(() => {
     return new Map<string, string>();
   }, []);
+  const [gameOver, setGameOver] = useState(false);
 
   const socket = usePartySocket({
     host: partyKitHost,
@@ -83,6 +85,9 @@ export function Puzzle({
           break;
         case "register":
           handleRegisterMessage(serverMessage);
+          break;
+        case "gameover":
+          handleGameOverMessage(serverMessage);
           break;
       }
     },
@@ -121,6 +126,7 @@ export function Puzzle({
     },
     [setPlayerId]
   );
+
   const handleScoreMessage = useCallback(
     (message: ServerScoreMessage) => {
       setScores(message.scores);
@@ -128,6 +134,13 @@ export function Puzzle({
     [setScores]
   );
 
+  const handleGameOverMessage = useCallback(
+    (message: ServerGameOverMessage) => {
+      setScores(message.scores);
+      setGameOver(true);
+    },
+    [setScores]
+  );
   const sendMessage = useCallback(
     (message: ClientMessage) => {
       socket.send(JSON.stringify(message));
@@ -278,6 +291,7 @@ export function Puzzle({
         onLoad={() => setRunPostScriptWorkload(true)}
       />
       {scores && <Scores scores={scores} />}
+      {gameOver && <div>ALL DONE</div>}
     </>
   );
 }

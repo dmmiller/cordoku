@@ -16,6 +16,12 @@ export interface PuzzleEvent extends Event {
   detail: Change[];
 }
 
+export type ScoreEntry = {
+  cordId: string;
+  playerId: string;
+  score: number;
+};
+
 export type ServerChangeMessage = {
   type: "change";
   changes: Change[];
@@ -28,7 +34,7 @@ export type ServerRevertMessage = {
 
 export type ServerScoreMessage = {
   type: "score";
-  scores: { cordId: string; playerId: string; score: number }[];
+  scores: ScoreEntry[];
 };
 
 export type ServerRegisterMessage = {
@@ -36,11 +42,17 @@ export type ServerRegisterMessage = {
   playerId: string;
 };
 
+export type ServerGameOverMessage = {
+  type: "gameover";
+  scores: ScoreEntry[];
+};
+
 export type ServerMessage =
   | ServerChangeMessage
   | ServerRegisterMessage
   | ServerRevertMessage
-  | ServerScoreMessage;
+  | ServerScoreMessage
+  | ServerGameOverMessage;
 
 export type ClientChangeMessage = {
   type: "change";

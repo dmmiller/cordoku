@@ -4,7 +4,9 @@ import {
   ClientChangeMessage,
   ClientMessage,
   ClientRegisterMessage,
+  ScoreEntry,
   ServerChangeMessage,
+  ServerGameOverMessage,
   ServerRegisterMessage,
   ServerRevertMessage,
   ServerScoreMessage,
@@ -20,6 +22,7 @@ export default class Server implements Party.Server {
   playerIdToCordIdMap: Map<string, string>;
   keys: Record<string, string>;
   solution: string[];
+  emptySquareCount: number;
 
   constructor(readonly party: Party.Party) {
     this.changes = new Map();
@@ -29,6 +32,19 @@ export default class Server implements Party.Server {
     this.playerIdToCordIdMap = new Map();
     this.keys = {};
     this.solution = [];
+    this.emptySquareCount = 0;
+  }
+
+  buildScores() {
+    const scores: ScoreEntry[] = [];
+    this.scores.forEach((value, key) => {
+      scores.push({
+        cordId: this.playerIdToCordIdMap.get(key)!,
+        playerId: key,
+        score: value,
+      });
+    });
+    return scores;
   }
 
   adjustScore(playerId: string, delta: number) {
@@ -39,15 +55,8 @@ export default class Server implements Party.Server {
     // Send an update
     const scoreMessage: ServerScoreMessage = {
       type: "score",
-      scores: [],
+      scores: this.buildScores(),
     };
-    this.scores.forEach((value, key) => {
-      scoreMessage.scores.push({
-        cordId: this.playerIdToCordIdMap.get(key)!,
-        playerId: key,
-        score: value,
-      });
-    });
     this.party.broadcast(JSON.stringify(scoreMessage));
   }
 
@@ -123,6 +132,16 @@ export default class Server implements Party.Server {
 
     // as well as broadcast it to all the other connections in the room...
     this.party.broadcast(JSON.stringify(changeMessage), [sender.id]);
+
+    // If all changes equals the total number of empty squares we stared with
+    // the game is over
+    if (this.changes.size === this.emptySquareCount) {
+      const gameoverMessage: ServerGameOverMessage = {
+        type: "gameover",
+        scores: this.buildScores(),
+      };
+      this.party.broadcast(JSON.stringify(gameoverMessage));
+    }
   }
 
   onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
@@ -140,12 +159,22 @@ export default class Server implements Party.Server {
     }
 
     console.log("Generating puzzle for ", this.party.id);
-    this.solution = selectPuzzle(data.mode, data.id).solution;
+    const puzzle = selectPuzzle(data.mode, data.id);
+    this.solution = puzzle.solution;
     this.solution.forEach((row, index) => {
       for (let c = 0; c < row.length; c++) {
         this.keys[`cell-${index}-${c}`] = row[c];
       }
     });
+    let emptySquareCount = 0;
+    puzzle.givens.forEach((row) => {
+      for (let i = 0; i < 9; i++) {
+        if (row[i] === ".") {
+          emptySquareCount++;
+        }
+      }
+    });
+    this.emptySquareCount = emptySquareCount;
   }
 
   onMessage(message: string, sender: Party.Connection) {
