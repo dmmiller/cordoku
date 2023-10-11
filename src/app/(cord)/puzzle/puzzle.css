@@ -21,7 +21,7 @@
 }
 
 .name[data-coop-text-playerId="player-4"] {
-  color: yellow;
+  color: olive;
 }
 
 .name[data-coop-text-playerId="player-5"] {
@@ -61,7 +61,7 @@
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-4"] {
-  color: yellow;
+  color: olive;
 }
 
 .puzzle-entry .cell[data-coop-text-playerId="player-5"] {
@@ -138,7 +138,7 @@
   display: block;
   border-left: 10px solid transparent;
   border-bottom: 10px solid transparent;
-  border-top: 10px solid yellow;
+  border-top: 10px solid olive;
 }
 
 .puzzle-entry .cell[data-cordoku-cell-present="player-5"]::after {
