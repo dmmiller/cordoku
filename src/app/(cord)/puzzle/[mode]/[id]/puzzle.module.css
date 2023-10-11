@@ -23,6 +23,5 @@
   grid-row: 1;
   grid-row-end: 2;
   height: 100%;
-  width: max-content;
-  max-width: 300px;
+  width: 360px;
 }

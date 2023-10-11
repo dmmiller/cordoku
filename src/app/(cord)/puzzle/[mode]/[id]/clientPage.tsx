@@ -65,7 +65,6 @@ export default function ClientPuzzlePage({
         location={location}
         threadId={threadId}
         organizationId={orgId}
-        showPlaceholder={false}
       />
       <LiveCursors location={location} organizationID={orgId} />
       {gameOver && <WinnerDisplay id={winnerId} />}

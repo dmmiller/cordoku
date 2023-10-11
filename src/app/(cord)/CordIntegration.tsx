@@ -10,7 +10,19 @@ const CordIntegration = ({
   children,
 }: React.PropsWithChildren<Props>) => {
   return (
-    <CordProvider clientAuthToken={clientAuthToken}>{children}</CordProvider>
+    <CordProvider
+      clientAuthToken={clientAuthToken}
+      translations={{
+        en: {
+          thread: {
+            placeholder_title: "Welcome to the Thunderdoku",
+            placeholder_body: "Talk Smack. Win big. Brag to your friends.",
+          },
+        },
+      }}
+    >
+      {children}
+    </CordProvider>
   );
 };
 
