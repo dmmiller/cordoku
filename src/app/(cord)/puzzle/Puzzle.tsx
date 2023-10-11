@@ -178,6 +178,11 @@ export function Puzzle({
         if (alternatesSet.has(change.locationKey)) {
           return;
         }
+        // If someone deletes a value, we get a notice that it has changed
+        // to the empty string, don't send those on
+        if (!change.value?.length) {
+          return;
+        }
         const clientMessage: ClientChangeMessage = {
           type: "change",
           change,
