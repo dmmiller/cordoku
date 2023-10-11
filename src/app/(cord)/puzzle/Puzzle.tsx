@@ -34,6 +34,7 @@ export function Puzzle({
   location,
   orgId,
   cordUserId,
+  onGameEnd,
 }: {
   partyKitHost: string;
   roomId: string;
@@ -41,6 +42,7 @@ export function Puzzle({
   location: Location;
   orgId: string;
   cordUserId: string;
+  onGameEnd: (id: string) => void;
 }) {
   const puzzleRef = useRef<PuzzleDivElement>(null);
   const alternatesSet = useMemo(() => {
@@ -137,7 +139,7 @@ export function Puzzle({
   const handleGameOverMessage = useCallback(
     (message: ServerGameOverMessage) => {
       setScores(message.scores);
-      setGameOver(true);
+      onGameEnd("dave");
     },
     [setScores]
   );
@@ -293,7 +295,6 @@ export function Puzzle({
         onLoad={() => setRunPostScriptWorkload(true)}
       />
       {scores && <Scores scores={scores} />}
-      {gameOver && <div>ALL DONE</div>}
     </>
   );
 }

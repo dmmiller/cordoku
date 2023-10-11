@@ -4,6 +4,21 @@ import { Puzzle } from "@/app/(cord)/puzzle/Puzzle";
 import { LiveCursors, Thread, user } from "@cord-sdk/react";
 import { Location } from "@cord-sdk/types";
 import styles from "./puzzle.module.css";
+import { useState } from "react";
+import Link from "next/link";
+
+function WinnerDisplay(name: string) {
+  return (
+    <div className="final-result">
+      <h1>
+        WINNER IS
+        <br />
+        <span>{name}</span>
+      </h1>
+      <Link href="/">New Game</Link>
+    </div>
+  );
+}
 
 export default function ClientPuzzlePage({
   partyKitHost,
@@ -20,6 +35,7 @@ export default function ClientPuzzlePage({
   orgId: string;
   threadId: string;
 }) {
+  const [gameOver, setGameOver] = useState(false);
   const viewerData = user.useViewerData();
   if (!viewerData) {
     return <></>;
@@ -34,6 +50,9 @@ export default function ClientPuzzlePage({
         location={location}
         orgId={orgId}
         cordUserId={viewerData.id}
+        onGameEnd={(id) => {
+          setGameOver(true);
+        }}
       ></Puzzle>
       <Thread
         className={styles.thread}
@@ -43,6 +62,7 @@ export default function ClientPuzzlePage({
         showPlaceholder={false}
       />
       <LiveCursors location={location} organizationID={orgId} />
+      {gameOver && WinnerDisplay("dave")}
     </div>
   );
 }
