@@ -59,7 +59,6 @@ export function Puzzle({
   const knownUsersMap = useMemo(() => {
     return new Map<string, string>();
   }, []);
-  const [gameOver, setGameOver] = useState(false);
 
   const socket = usePartySocket({
     host: partyKitHost,
@@ -139,7 +138,15 @@ export function Puzzle({
   const handleGameOverMessage = useCallback(
     (message: ServerGameOverMessage) => {
       setScores(message.scores);
-      onGameEnd("dave");
+      let winnerId = "";
+      let maxScore = 0;
+      message.scores.forEach(({ cordId, score }) => {
+        if (score > maxScore) {
+          winnerId = cordId;
+          maxScore = score;
+        }
+      });
+      onGameEnd(winnerId);
     },
     [setScores]
   );

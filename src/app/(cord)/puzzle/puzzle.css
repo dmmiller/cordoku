@@ -191,7 +191,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 32px;
+  gap: 140px;
   background-color: rgba(0, 0, 0, 0.2);
   z-index: 10010;
 }
@@ -227,4 +227,6 @@
 
 .final-result a {
   z-index: 1;
+  color: black;
+  font-size: 40px;
 }

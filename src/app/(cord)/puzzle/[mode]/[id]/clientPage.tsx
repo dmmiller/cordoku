@@ -7,13 +7,18 @@ import styles from "./puzzle.module.css";
 import { useState } from "react";
 import Link from "next/link";
 
-function WinnerDisplay(name: string) {
+function WinnerDisplay({ id }: { id: string }) {
+  const winner = user.useUserData(id);
+  if (!winner) {
+    return <></>;
+  }
+
   return (
     <div className="final-result">
       <h1>
         WINNER IS
         <br />
-        <span>{name}</span>
+        <span>{winner.name?.toUpperCase()}</span>
       </h1>
       <Link href="/">New Game</Link>
     </div>
@@ -36,6 +41,7 @@ export default function ClientPuzzlePage({
   threadId: string;
 }) {
   const [gameOver, setGameOver] = useState(false);
+  const [winnerId, setWinnerId] = useState("");
   const viewerData = user.useViewerData();
   if (!viewerData) {
     return <></>;
@@ -52,6 +58,7 @@ export default function ClientPuzzlePage({
         cordUserId={viewerData.id}
         onGameEnd={(id) => {
           setGameOver(true);
+          setWinnerId(id);
         }}
       ></Puzzle>
       <Thread
@@ -62,7 +69,7 @@ export default function ClientPuzzlePage({
         showPlaceholder={false}
       />
       <LiveCursors location={location} organizationID={orgId} />
-      {gameOver && WinnerDisplay("dave")}
+      {gameOver && <WinnerDisplay id={winnerId} />}
     </div>
   );
 }
