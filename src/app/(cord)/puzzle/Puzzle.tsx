@@ -254,6 +254,7 @@ export function Puzzle({
         },
         { organizationID: orgId, exclusive_within: gridLocation }
       );
+      e.target.setAttribute("data-cordoku-cell-present", playerId);
     },
     [gridLocation, playerId, orgId]
   );
@@ -271,6 +272,7 @@ export function Puzzle({
           exclusive_within: gridLocation,
         }
       );
+      e.target.removeAttribute("data-cordoku-cell-present");
     },
     [gridLocation, playerId, orgId]
   );
