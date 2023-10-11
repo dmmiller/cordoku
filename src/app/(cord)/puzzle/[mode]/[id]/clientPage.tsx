@@ -48,7 +48,6 @@ export default function ClientPuzzlePage({
   }
   return (
     <div className={styles.container}>
-      <div className={styles.hello}>Hello {viewerData.name}</div>
       <Puzzle
         partyKitHost={partyKitHost}
         roomId={roomId}

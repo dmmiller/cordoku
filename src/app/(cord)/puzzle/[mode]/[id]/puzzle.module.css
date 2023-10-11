@@ -2,22 +2,27 @@
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
-  gap: 8px;
+  gap: 40px;
+  grid-template-rows: 360px;
 }
 .container > * {
   grid-column: 2;
+  grid-row: 1;
 }
 
-.container > ul {
+.container > .scores {
   grid-column: 1;
-}
-
-.hello {
-  grid-column: 1;
+  grid-row: 1;
+  width: max-content;
+  max-width: 300px;
 }
 
 .thread {
-  grid-column-start: 1;
+  grid-column-start: 3;
   grid-column-end: -1;
-  max-height: 50vh;
+  grid-row: 1;
+  grid-row-end: 2;
+  height: 100%;
+  width: max-content;
+  max-width: 300px;
 }
