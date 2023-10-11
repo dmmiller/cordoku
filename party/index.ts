@@ -109,6 +109,11 @@ export default class Server implements Party.Server {
       return;
     }
 
+    if (!value) {
+      // We sometimes get deletes passed through and those need to be ignored for score
+      return;
+    }
+
     if (this.keys[location] !== value) {
       change.value = null;
       const revertMessage: ServerRevertMessage = {
