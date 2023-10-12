@@ -236,6 +236,10 @@ export function Puzzle({
     const addMap = new Map<string, [string, string]>();
     const updateSet = new Set<string>();
     present.forEach((value) => {
+      // Skip updates for local user
+      if (value.id === cordUserId) {
+        return;
+      }
       const userId = value.id;
       updateSet.add(userId);
       const locations = value.ephemeral.locations as GridLocation[];
