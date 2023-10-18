@@ -64,9 +64,9 @@ export default function ClientPuzzlePage({
         className={styles.thread}
         location={location}
         threadId={threadId}
-        organizationId={orgId}
+        groupId={orgId}
       />
-      <LiveCursors location={location} organizationID={orgId} />
+      <LiveCursors location={location} groupId={orgId} />
       {gameOver && <WinnerDisplay id={winnerId} />}
     </div>
   );

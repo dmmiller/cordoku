@@ -277,7 +277,7 @@ export function Puzzle({
           cell: e.target.id,
           playerId,
         },
-        { organizationID: orgId, exclusive_within: gridLocation }
+        { groupID: orgId, exclusive_within: gridLocation }
       );
       e.target.setAttribute("data-cordoku-cell-present", playerId);
     },
@@ -292,7 +292,7 @@ export function Puzzle({
       window.CordSDK?.presence.setPresent(
         { ...gridLocation, cell: e.target.id, playerId },
         {
-          organizationID: orgId,
+          groupID: orgId,
           absent: true,
           exclusive_within: gridLocation,
         }
