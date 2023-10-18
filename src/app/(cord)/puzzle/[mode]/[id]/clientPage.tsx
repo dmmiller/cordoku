@@ -66,7 +66,7 @@ export default function ClientPuzzlePage({
         threadId={threadId}
         groupId={orgId}
       />
-      <LiveCursors location={location} groupId={orgId} />
+      <LiveCursors location={location} groupID={orgId} />
       {gameOver && <WinnerDisplay id={winnerId} />}
     </div>
   );
